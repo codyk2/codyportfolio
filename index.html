@@ -1165,40 +1165,47 @@ footer {
   object-fit: cover;
   display: block;
 }
-.life-card figcaption {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 32px 28px 26px;
-  color: #fff;
-  background: linear-gradient(180deg,
-    rgba(0,0,0,0) 0%,
-    rgba(0,0,0,0.35) 40%,
-    rgba(0,0,0,0.88) 100%);
-  opacity: 0;
-  transition: opacity .5s ease .15s;
+/* captions live outside the card, below the deck (editorial style) */
+.life-captions {
+  position: relative;
+  margin-top: 28px;
+  min-height: 180px;
 }
-.life-card[data-pos="0"] figcaption { opacity: 1; }
+.life-caption {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.life-caption.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 .life-tag {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.82);
-  margin-bottom: 8px;
+  color: var(--mute);
+  margin-bottom: 10px;
 }
 .life-title {
   font-family: var(--display);
-  font-size: clamp(18px, 1.9vw, 24px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: clamp(20px, 1.9vw, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
   font-weight: 600;
-  margin: 0 0 8px;
+  color: var(--ink);
+  margin: 0 0 10px;
+  max-width: 26ch;
 }
 .life-desc {
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255,255,255,0.85);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
   margin: 0;
-  max-width: 54ch;
+  max-width: 52ch;
 }
 .life-nav-btn {
   width: 52px; height: 52px;
@@ -1448,38 +1455,39 @@ body.dark .socials a:hover { background: #fff; color: #000; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
 
-    <div class="life-deck" id="lifeDeck">
-      <figure class="life-card" data-i="0" data-pos="0">
-        <img src="assets/ironman-waco.jpg" alt="Cody finishing IRONMAN 70.3 Waco" loading="lazy" />
-        <figcaption>
-          <div class="life-tag">IRONMAN 70.3 · Waco</div>
-          <h3 class="life-title">Crossing the finish at 70.3 Waco</h3>
-          <p class="life-desc">Bib 622. 1.2 mi swim, 56 mi bike, 13.1 mi run. Training for long-course endurance is the closest thing I've found to shipping software — slow compounding, honest feedback, no shortcuts.</p>
-        </figcaption>
-      </figure>
-
-      <figure class="life-card" data-i="1" data-pos="1">
-        <img src="assets/yc-hackathon.jpg" alt="Cody and teammate pitching at the YC × DeepMind hackathon" loading="lazy" />
-        <figcaption>
-          <div class="life-tag">YC × Cactus × DeepMind · San Francisco</div>
-          <h3 class="life-title">Pitching at the Gemma 4 hackathon</h3>
-          <p class="life-desc">That's me on the right. My partner and I built an agentic livestream-shopping demo in a weekend and pitched it live to the room. Fast, noisy, fun — exactly the kind of building I want to keep doing.</p>
-        </figcaption>
-      </figure>
-
-      <figure class="life-card" data-i="2" data-pos="2">
-        <img src="assets/baylor-halfmarathon.jpg" alt="Cody and a friend after the Baylor Line Half Marathon at McLane Stadium" loading="lazy" />
-        <figcaption>
-          <div class="life-tag">Baylor Line Half · McLane Stadium</div>
-          <h3 class="life-title">Finish line at McLane, 6am start</h3>
-          <p class="life-desc">"Toughest Half in Texas" — me and a buddy after crossing the finish on the McLane turf. Running with people I like is how I keep the rest of my life in proportion.</p>
-        </figcaption>
-      </figure>
-    </div>
+        <div class="life-deck" id="lifeDeck">
+          <figure class="life-card" data-i="0" data-pos="0">
+            <img src="assets/ironman-waco.jpg" alt="Cody finishing IRONMAN 70.3 Waco" loading="lazy" />
+          </figure>
+          <figure class="life-card" data-i="1" data-pos="1">
+            <img src="assets/yc-hackathon.jpg" alt="Cody and teammate pitching at the YC × DeepMind hackathon" loading="lazy" />
+          </figure>
+          <figure class="life-card" data-i="2" data-pos="2">
+            <img src="assets/baylor-halfmarathon.jpg" alt="Cody and a friend after the Baylor Line Half Marathon at McLane Stadium" loading="lazy" />
+          </figure>
+        </div>
 
         <button class="life-nav-btn next" id="lifeNext" aria-label="Next photo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+      </div>
+
+      <div class="life-captions" id="lifeCaptions">
+        <div class="life-caption active" data-i="0">
+          <div class="life-tag">IRONMAN 70.3 · Waco</div>
+          <h3 class="life-title">Crossing the finish at 70.3 Waco</h3>
+          <p class="life-desc">Bib 622. 1.2 mi swim, 56 mi bike, 13.1 mi run. Training for long-course endurance is the closest thing I've found to shipping software — slow compounding, honest feedback, no shortcuts.</p>
+        </div>
+        <div class="life-caption" data-i="1">
+          <div class="life-tag">YC × Cactus × DeepMind · San Francisco</div>
+          <h3 class="life-title">Pitching at the Gemma 4 hackathon</h3>
+          <p class="life-desc">That's me on the right. My partner and I built an agentic livestream-shopping demo in a weekend and pitched it live to the room. Fast, noisy, fun — exactly the kind of building I want to keep doing.</p>
+        </div>
+        <div class="life-caption" data-i="2">
+          <div class="life-tag">Baylor Line Half · McLane Stadium</div>
+          <h3 class="life-title">Finish line at McLane, 6am start</h3>
+          <p class="life-desc">"Toughest Half in Texas" — me and a buddy after crossing the finish on the McLane turf. Running with people I like is how I keep the rest of my life in proportion.</p>
+        </div>
       </div>
 
       <div class="life-dots" id="lifeDots">
@@ -1908,6 +1916,7 @@ const lifeDeck = document.getElementById('lifeDeck');
 if (lifeDeck) {
   const lifeCards = [...lifeDeck.querySelectorAll('.life-card')];
   const lifeDots = [...document.querySelectorAll('#lifeDots .life-dot')];
+  const lifeCaptions = [...document.querySelectorAll('#lifeCaptions .life-caption')];
   // order[0] = index of the card currently at the front
   let order = lifeCards.map((_, i) => i);
 
@@ -1917,6 +1926,9 @@ if (lifeDeck) {
     });
     lifeDots.forEach((dot, i) => {
       dot.classList.toggle('active', i === order[0]);
+    });
+    lifeCaptions.forEach((cap, i) => {
+      cap.classList.toggle('active', i === order[0]);
     });
   };
   render();
