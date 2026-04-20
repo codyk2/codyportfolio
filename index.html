@@ -364,6 +364,49 @@ section { position: relative; }
   color: var(--mute);
   margin-top: 8px;
 }
+/* "Currently" panel — replaces the abstract stats on the About aside */
+.currently {
+  border-top: 1px solid var(--hair);
+  padding-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.currently-row { display: flex; flex-direction: column; gap: 6px; }
+.currently-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.currently-label .live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #30d158;
+  box-shadow: 0 0 0 0 rgba(48, 209, 88, .6);
+  animation: pulse 2s infinite;
+}
+.currently-value {
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  font-weight: 500;
+}
+.currently-value .meta {
+  color: var(--mute);
+  font-weight: 400;
+  font-size: 14px;
+}
+.currently-value a {
+  border-bottom: 1px solid var(--hair-strong);
+  transition: border-color .2s, color .2s;
+  text-decoration: none;
+}
+.currently-value a:hover { border-color: var(--accent); color: var(--accent); }
 .about-copy p {
   font-size: 19px; line-height: 1.55;
   color: var(--ink-2);
@@ -1382,14 +1425,22 @@ body.dark .socials a:hover { background: #fff; color: #000; }
 <section class="about" id="about" data-screen-label="About">
   <div class="wrap about-grid">
     <div class="about-aside">
-      <div class="about-stats">
-        <div class="stat reveal">
-          <div class="stat-num" data-count="2027"><span>0</span></div>
-          <div class="stat-label">Class of · Baylor</div>
+      <div class="currently reveal">
+        <div class="currently-row">
+          <div class="currently-label"><span class="live-dot"></span>Now</div>
+          <div class="currently-value">Shipping <a href="https://github.com/codyk2/Zo" target="_blank" rel="noopener">Zo / EMPIRE</a> <span class="meta">· post-YC hackathon polish</span></div>
         </div>
-        <div class="stat reveal">
-          <div class="stat-num" data-count="285000"><span>0</span></div>
-          <div class="stat-label">Lines of code · GitHub</div>
+        <div class="currently-row">
+          <div class="currently-label">Next</div>
+          <div class="currently-value">SpaceX SWE intern <span class="meta">· Test Reliability · <span id="spacexCountdown" data-target="2026-06-01">—</span></span></div>
+        </div>
+        <div class="currently-row">
+          <div class="currently-label">Studying</div>
+          <div class="currently-value">Data Science @ Baylor <span class="meta">· Class of 2027</span></div>
+        </div>
+        <div class="currently-row">
+          <div class="currently-label">Researching</div>
+          <div class="currently-value">Dynamic Spectrum Access <span class="meta">@ SMART Hub</span></div>
         </div>
       </div>
     </div>
@@ -1980,6 +2031,18 @@ const countIO = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.5 });
+/* Currently panel: SpaceX countdown */
+(function() {
+  const el = document.getElementById('spacexCountdown');
+  if (!el) return;
+  const target = new Date(el.dataset.target + 'T00:00:00');
+  const days = Math.ceil((target - Date.now()) / 86400000);
+  if (days > 1) el.textContent = days + 'd away';
+  else if (days === 1) el.textContent = 'tomorrow';
+  else if (days === 0) el.textContent = 'today';
+  else el.textContent = (-days) + 'd in';
+})();
+
 document.querySelectorAll('.stat-num[data-count]').forEach(el => {
   if (el.querySelector('span:first-child')) countIO.observe(el);
 });
