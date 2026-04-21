@@ -1475,6 +1475,8 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
     0 2px 4px rgba(0,0,0,0.04);
   transition: transform 280ms cubic-bezier(.22,.61,.36,1), box-shadow 280ms ease;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   will-change: transform;
 }
 .resume-view-body:hover .resume-view-canvas {
@@ -1914,12 +1916,16 @@ window.__renderResume = async function() {
   try {
     const pdf = await pdfjsLib.getDocument('resume.pdf').promise;
     const page = await pdf.getPage(1);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const viewport = page.getViewport({ scale: 2 * dpr });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    const dpr = window.devicePixelRatio || 1;
+    const scale = Math.max(3, 3 * dpr);
+    const viewport = page.getViewport({ scale });
+    const ctx = canvas.getContext('2d', { alpha: false });
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
     canvas.style.aspectRatio = (viewport.width / viewport.height).toString();
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    await page.render({ canvasContext: ctx, viewport, intent: 'display' }).promise;
   } catch (err) {
     console.error('Resume render failed:', err);
     canvas.dataset.rendered = '';
