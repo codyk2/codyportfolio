@@ -1394,7 +1394,7 @@ body.dark .socials a:hover { background: #fff; color: #000; }
 
 /* ===================== RESUME SLIDE VIEW ===================== */
 .site-shell {
-  transition: transform 520ms cubic-bezier(.22,.61,.36,1);
+  transition: transform 900ms cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
 body.resume-open { overflow: hidden; }
@@ -1404,7 +1404,7 @@ body.resume-open .site-shell { transform: translateX(-100%); }
   position: fixed; inset: 0; z-index: 150;
   background: #ffffff;
   transform: translateX(100%);
-  transition: transform 520ms cubic-bezier(.22,.61,.36,1);
+  transition: transform 900ms cubic-bezier(.22,.61,.36,1);
   will-change: transform;
   display: flex; flex-direction: column;
   visibility: hidden;
@@ -1412,10 +1412,10 @@ body.resume-open .site-shell { transform: translateX(-100%); }
 body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
 
 .resume-view-head {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 2;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 28px;
-  border-bottom: 1px solid var(--hair);
-  background: #fff;
+  padding: 18px 28px;
+  background: transparent;
 }
 .resume-view-title {
   font-family: var(--mono);
@@ -1445,27 +1445,21 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
 .resume-view-body {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
-  padding: 32px;
+  padding: 72px 24px 24px;
   background: #ffffff;
 }
 .resume-view-frame {
   width: 100%;
-  max-width: 900px;
+  max-width: 860px;
   height: 100%;
-  max-height: 1200px;
-  background: #f5f5f7;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  overflow: hidden;
 }
-.resume-view-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.resume-view-frame iframe { width: 100%; height: 100%; border: 0; display: block; background: #ffffff; }
 
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 820px) {
   .nav-links { display: none; }
-  .resume-view-head { padding: 12px 16px; }
-  .resume-view-body { padding: 12px; }
-  .resume-view-frame { border-radius: 8px; }
+  .resume-view-head { padding: 14px 16px; }
+  .resume-view-body { padding: 64px 8px 8px; }
   .about-grid { grid-template-columns: 1fr; gap: 48px; }
   .about-aside { position: static; }
   .avatar-wrap { max-width: 320px; }
