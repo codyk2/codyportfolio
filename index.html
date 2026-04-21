@@ -1447,15 +1447,16 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
   display: flex; align-items: center; justify-content: center;
   padding: 72px 24px 24px;
   background: #ffffff;
-  overflow: hidden;
+  overflow: auto;
 }
-.resume-view-frame {
-  aspect-ratio: 8.5 / 11;
-  height: 100%;
+.resume-view-canvas {
+  display: block;
+  width: auto;
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(100vh - 96px);
+  height: auto;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
-.resume-view-frame iframe { width: 100%; height: 100%; border: 0; display: block; background: #ffffff; }
 
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 820px) {
@@ -1871,11 +1872,32 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
     </div>
   </div>
   <div class="resume-view-body">
-    <div class="resume-view-frame">
-      <iframe title="Resume PDF" src="" loading="lazy"></iframe>
-    </div>
+    <canvas class="resume-view-canvas" id="resumeCanvas" aria-label="Resume preview"></canvas>
   </div>
 </div>
+
+<script type="module">
+import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs';
+window.__renderResume = async function() {
+  const canvas = document.getElementById('resumeCanvas');
+  if (!canvas || canvas.dataset.rendered) return;
+  canvas.dataset.rendered = '1';
+  try {
+    const pdf = await pdfjsLib.getDocument('resume.pdf').promise;
+    const page = await pdf.getPage(1);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const viewport = page.getViewport({ scale: 2 * dpr });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    canvas.style.aspectRatio = (viewport.width / viewport.height).toString();
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+  } catch (err) {
+    console.error('Resume render failed:', err);
+    canvas.dataset.rendered = '';
+  }
+};
+</script>
 
 <script>
 /* ======================== EDIT MODE ======================== */
@@ -2220,14 +2242,12 @@ if (solar) {
 (() => {
   const view = document.getElementById('resumeView');
   if (!view) return;
-  const frame = view.querySelector('iframe');
-  const pdfPath = 'resume.pdf';
   let lastFocus = null;
 
   function open(e) {
     if (e) e.preventDefault();
     lastFocus = document.activeElement;
-    if (!frame.getAttribute('src')) frame.setAttribute('src', pdfPath + '#view=FitH');
+    window.__renderResume?.();
     document.body.classList.add('resume-open');
     view.setAttribute('aria-hidden', 'false');
     view.querySelector('.resume-view-btn.primary')?.focus();
