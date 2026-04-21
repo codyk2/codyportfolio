@@ -1459,6 +1459,7 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
   0%, 100% { transform: translateY(-4px); }
   50% { transform: translateY(6px); }
 }
+.resume-view-body.zoomed .resume-float { animation: none; transform: translateY(0); }
 .resume-view-canvas {
   display: block;
   width: auto;
@@ -1469,11 +1470,12 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 4px;
   background: #ffffff;
+  cursor: zoom-in;
   box-shadow:
     0 30px 60px -20px rgba(0,0,0,0.22),
     0 10px 24px -8px rgba(0,0,0,0.10),
     0 2px 4px rgba(0,0,0,0.04);
-  transition: transform 280ms cubic-bezier(.22,.61,.36,1), box-shadow 280ms ease;
+  transition: transform 450ms cubic-bezier(.22,.61,.36,1), box-shadow 450ms ease;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -1484,6 +1486,14 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
     0 45px 90px -20px rgba(0,0,0,0.28),
     0 14px 30px -10px rgba(0,0,0,0.14),
     0 2px 6px rgba(0,0,0,0.06);
+}
+.resume-view-body.zoomed .resume-view-canvas {
+  cursor: zoom-out;
+  transform: scale(1.55) translateZ(120px) !important;
+  box-shadow:
+    0 60px 120px -20px rgba(0,0,0,0.35),
+    0 20px 50px -10px rgba(0,0,0,0.18),
+    0 4px 10px rgba(0,0,0,0.08);
 }
 
 /* ===================== RESPONSIVE ===================== */
@@ -2319,6 +2329,7 @@ if (solar) {
   }
   function kick() { if (!rafId) rafId = requestAnimationFrame(animate); }
   body.addEventListener('mousemove', (e) => {
+    if (body.classList.contains('zoomed')) return;
     const rect = canvas.getBoundingClientRect();
     const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
     const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
@@ -2327,6 +2338,23 @@ if (solar) {
     kick();
   });
   body.addEventListener('mouseleave', () => { targetRX = 0; targetRY = 0; kick(); });
+
+  canvas.addEventListener('click', () => {
+    const willZoom = !body.classList.contains('zoomed');
+    body.classList.toggle('zoomed', willZoom);
+    if (willZoom) { targetRX = 0; targetRY = 0; kick(); }
+  });
+  body.addEventListener('click', (e) => {
+    if (e.target === body && body.classList.contains('zoomed')) {
+      body.classList.remove('zoomed');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && body.classList.contains('zoomed')) {
+      body.classList.remove('zoomed');
+      e.stopPropagation();
+    }
+  }, true);
 })();
 
 /* ======================== SMOOTH LINK SCROLL ======================== */
