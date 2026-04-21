@@ -1445,17 +1445,43 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
 .resume-view-body {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
-  padding: 72px 24px 24px;
+  padding: 96px 32px 48px;
   background: #ffffff;
-  overflow: auto;
+  perspective: 1800px;
+  overflow: hidden;
+}
+.resume-float {
+  animation: resume-float 7s ease-in-out infinite;
+  display: flex;
+  transform-style: preserve-3d;
+}
+@keyframes resume-float {
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(6px); }
 }
 .resume-view-canvas {
   display: block;
   width: auto;
-  max-width: 100%;
-  max-height: calc(100vh - 96px);
   height: auto;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  max-width: 100%;
+  max-height: calc(100vh - 156px);
+  max-width: min(560px, calc((100vh - 156px) * 0.773));
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow:
+    0 30px 60px -20px rgba(0,0,0,0.22),
+    0 10px 24px -8px rgba(0,0,0,0.10),
+    0 2px 4px rgba(0,0,0,0.04);
+  transition: transform 280ms cubic-bezier(.22,.61,.36,1), box-shadow 280ms ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.resume-view-body:hover .resume-view-canvas {
+  box-shadow:
+    0 45px 90px -20px rgba(0,0,0,0.28),
+    0 14px 30px -10px rgba(0,0,0,0.14),
+    0 2px 6px rgba(0,0,0,0.06);
 }
 
 /* ===================== RESPONSIVE ===================== */
@@ -1872,7 +1898,9 @@ body.resume-open .resume-view { transform: translateX(0); visibility: visible; }
     </div>
   </div>
   <div class="resume-view-body">
-    <canvas class="resume-view-canvas" id="resumeCanvas" aria-label="Resume preview"></canvas>
+    <div class="resume-float">
+      <canvas class="resume-view-canvas" id="resumeCanvas" aria-label="Resume preview"></canvas>
+    </div>
   </div>
 </div>
 
@@ -2267,6 +2295,32 @@ if (solar) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.body.classList.contains('resume-open')) close();
   });
+
+  const body = view.querySelector('.resume-view-body');
+  const canvas = view.querySelector('.resume-view-canvas');
+  const MAX_TILT = 7;
+  let rafId = null, targetRX = 0, targetRY = 0, curRX = 0, curRY = 0;
+  function animate() {
+    curRX += (targetRX - curRX) * 0.12;
+    curRY += (targetRY - curRY) * 0.12;
+    canvas.style.transform = `rotateX(${curRX.toFixed(2)}deg) rotateY(${curRY.toFixed(2)}deg)`;
+    if (Math.abs(targetRX - curRX) > 0.05 || Math.abs(targetRY - curRY) > 0.05) {
+      rafId = requestAnimationFrame(animate);
+    } else {
+      rafId = null;
+      if (targetRX === 0 && targetRY === 0) canvas.style.transform = '';
+    }
+  }
+  function kick() { if (!rafId) rafId = requestAnimationFrame(animate); }
+  body.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+    const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+    targetRY = Math.max(-1, Math.min(1, dx)) * MAX_TILT;
+    targetRX = -Math.max(-1, Math.min(1, dy)) * MAX_TILT;
+    kick();
+  });
+  body.addEventListener('mouseleave', () => { targetRX = 0; targetRY = 0; kick(); });
 })();
 
 /* ======================== SMOOTH LINK SCROLL ======================== */
