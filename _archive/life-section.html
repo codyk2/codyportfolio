@@ -1,0 +1,68 @@
+<!--
+  Archived: "Life" section (photo carousel with IRONMAN / YC hackathon / Baylor Half).
+  Removed from index.html on 2026-04-21.
+
+  To restore:
+    1. Paste the block below back into index.html between the hero <section> and the
+       experience <section> (between "</section>" of id="top" and "<!-- EXPERIENCE -->").
+    2. The CSS (.life, .life-card, etc.) and the carousel JS (the `if (lifeDeck)` block)
+       were left in index.html, so pasting this HTML back is all that's needed.
+    3. Image assets live in assets/ironman-waco.jpg, yc-hackathon.jpg, baylor-halfmarathon.jpg.
+-->
+
+<!-- LIFE / CAROUSEL -->
+<section class="life" id="life" data-screen-label="Life">
+  <div class="life-layout">
+    <div class="life-head reveal">
+      <h2 class="section-title">Things I do when I'm not staring at a terminal.</h2>
+    </div>
+
+    <div class="life-main reveal">
+      <div class="life-deck-wrap">
+        <button class="life-nav-btn prev" id="lifePrev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+
+        <div class="life-deck" id="lifeDeck">
+          <figure class="life-card" data-i="0" data-pos="0">
+            <img src="assets/ironman-waco.jpg" alt="Cody finishing IRONMAN 70.3 Waco" loading="lazy" />
+          </figure>
+          <figure class="life-card" data-i="1" data-pos="1">
+            <img src="assets/yc-hackathon.jpg" alt="Cody and teammate pitching at the YC × DeepMind hackathon" loading="lazy" />
+          </figure>
+          <figure class="life-card" data-i="2" data-pos="2">
+            <img src="assets/baylor-halfmarathon.jpg" alt="Cody and a friend after the Baylor Line Half Marathon at McLane Stadium" loading="lazy" />
+          </figure>
+        </div>
+
+        <button class="life-nav-btn next" id="lifeNext" aria-label="Next photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="life-captions" id="lifeCaptions">
+        <div class="life-caption active" data-i="0">
+          <div class="life-tag">IRONMAN 70.3 · Waco</div>
+          <h3 class="life-title">Crossing the finish at 70.3 Waco</h3>
+          <p class="life-desc">Bib 622. 1.2 mi swim, 56 mi bike, 13.1 mi run. Training for long-course endurance is the closest thing I've found to shipping software — slow compounding, honest feedback, no shortcuts.</p>
+        </div>
+        <div class="life-caption" data-i="1">
+          <div class="life-tag">YC × Cactus × DeepMind · San Francisco</div>
+          <h3 class="life-title">Pitching at the Gemma 4 hackathon</h3>
+          <p class="life-desc">That's me on the right. My partner and I built an agentic livestream-shopping demo in a weekend and pitched it live to the room. Fast, noisy, fun — exactly the kind of building I want to keep doing.</p>
+        </div>
+        <div class="life-caption" data-i="2">
+          <div class="life-tag">Baylor Line Half · McLane Stadium</div>
+          <h3 class="life-title">Finish line at McLane, 6am start</h3>
+          <p class="life-desc">"Toughest Half in Texas" — me and a buddy after crossing the finish on the McLane turf. Running with people I like is how I keep the rest of my life in proportion.</p>
+        </div>
+      </div>
+
+      <div class="life-dots" id="lifeDots">
+        <button class="life-dot active" data-i="0" aria-label="Photo 1"></button>
+        <button class="life-dot" data-i="1" aria-label="Photo 2"></button>
+        <button class="life-dot" data-i="2" aria-label="Photo 3"></button>
+      </div>
+    </div>
+  </div>
+</section>
